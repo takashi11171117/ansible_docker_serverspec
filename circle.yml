@@ -7,7 +7,6 @@ machine:
 dependencies:
   pre:
     - docker build -t ansible_docker_serverspec -f Dockerfile --no-cache .
-    - docker run -v `pwd`/ansible:/ansible --name ci -it -d ansible_docker_serverspec
 test:
   pre:
-    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' ci)" -- /bin/sh -c 'ansible-playbook /ansible/ci_site.yml -i /ansible/ci_hosts -c local && cd /ansible/spec && rake spec'
+    - docker run -v `pwd`/ansible:/ansible --name ci -it ansible_docker_serverspec /bin/sh -c 'ansible-playbook /ansible/ci_site.yml -i /ansible/ci_hosts -c local && cd /ansible/spec && rake spec'
