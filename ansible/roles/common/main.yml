@@ -1,0 +1,7 @@
+- name: copy localefile
+  copy: src=/usr/share/zoneinfo/{{ localefile }} dest=/etc/localtime
+  become: yes
+
+- name: set timezone
+  replace: dest=/etc/sysconfig/clock regexp='^ZONE=.*' replace='ZONE="{{ timezone }}"'
+  become: yes

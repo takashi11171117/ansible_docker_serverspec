@@ -1,0 +1,5 @@
+alpine:
+  build: ./
+  entrypoint: tail -f /dev/null
+  ports:
+    - "22000:22"

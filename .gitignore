@@ -1,0 +1,7 @@
+hosts
+!ansible/ci/hosts
+vars/
+private_vars/
+roles/authorized_keys.j2
+vendor/
+.bundle/
