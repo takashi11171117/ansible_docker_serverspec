@@ -6,11 +6,8 @@ machine:
 
 dependencies:
   pre:
-    - if [[ -e ~/docker/docker_ansible_image.tar ]]; then docker load --input ~/docker/docker_ansible_image.tar ; else docker build -t ansible_docker_serverspec ~/ansible_docker_serverspec/ ; mkdir -p ~/docker ; docker save -o ~/docker/docker_ansible_image.tar ansible_docker_serverspec ; fi
-
-  cache_directories:
-    - "~/docker"
-
+    - docker build -t ansible_docker_serverspec -f Dockerfile --no-cache .
+    - docker run -v `pwd`/ansible:/ansible --name ci -it -d ansible_docker_serverspec
 test:
-  override:
-    - docker run -u develop -v `pwd`/ansible:/ansible ansible_docker_serverspec /bin/sh -c 'ansible-playbook /ansible/ci_site.yml -i /ansible/ci_hosts -c local && cd /ansible/spec && /home/develop/.rbenv/bin/rbenv exec bundle install && /home/develop/.rbenv/bin/rbenv exec bundle exec rake spec'
+  pre:
+    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' ci)" -- /bin/sh -c 'ansible-playbook /ansible/ci_site.yml -i /ansible/ci_hosts -c local && cd /ansible/spec && rake spec'

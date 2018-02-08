@@ -1,0 +1,15 @@
+- name: install via apk
+  apk: name="{{ item }}" state=latest
+  with_items:
+    - tzdata
+  become: yes
+
+- name: copy localefile
+  copy: src=/usr/share/zoneinfo/{{ localefile }} dest=/etc/localtime
+  become: yes
+
+- name: install via apk
+  apk: name="{{ item }}" state=absent
+  with_items:
+    - tzdata
+  become: yes

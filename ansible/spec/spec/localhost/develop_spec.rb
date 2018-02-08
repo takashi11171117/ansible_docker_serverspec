@@ -1,13 +1,9 @@
 require 'spec_helper'
 
-describe file("/etc/localtime") do
-  it { should exist }
+describe command('date') do
+  its(:stdout) { should match /JST/ }
 end
 
-describe file("/etc/sysconfig/clock") do
-  its(:content) { should match /ZONE="#{property[:timezone]}"/ }
-end
-
-describe command('ruby -v') do
-  its(:stdout) { should match /ruby 2\.2\.2.+/ }
+describe command('strings /etc/localtime') do
+  its(:stdout) { should match /JST-9/ }
 end
